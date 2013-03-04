@@ -1,0 +1,12 @@
+# -----------------------
+# | 	CodeIgniter		|
+# -----------------------
+
+*/config/development
+*/logs/log-*.php
+*/logs/!index.html
+*/cache/*
+*/cache/!index.html
+
+*/config/database.php
+*/Thumbs.db
