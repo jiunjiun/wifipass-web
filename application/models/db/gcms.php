@@ -12,12 +12,9 @@ class Gcms extends CI_Model {
 		return $this->db->get($this->tab);
 	}
 	
-	public function SWhere($id) {
-		$this->db->where('id', $id);
-		$query =  $this->db->get($this->tab);
-		foreach($query->result() as $row) {
-			return $row;
-		}
+	public function SWhere($user_id) {
+		$this->db->where('user_id', $user_id);
+		return $this->db->get($this->tab);
 	}
 		
 	public function Add($data) {
