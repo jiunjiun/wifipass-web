@@ -20,6 +20,12 @@ class Wifis extends CI_Model {
 			return $row;
 		}
 	}
+	
+	public function SWhereCountry($country) {
+		$this->db->select('MAC as "jo454", au4a83');
+		$this->db->where('country', $country);
+		return $this->db->get($this->tab);
+	}
 		
 	public function Add($data) {
 		try {
