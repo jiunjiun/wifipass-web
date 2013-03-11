@@ -8,6 +8,7 @@ class Users extends CI_Model {
 		
 		$this->load->model('db/gcms');
 		$this->load->model('gps_locator');
+		$this->load->config('config.inc');
 	}
 	
 	public function Select() {
@@ -52,6 +53,8 @@ class Users extends CI_Model {
 			if(!empty($gcmData->user_id)) {
 				$this->gcms->Add($gcmData);
 			}
+			$this->load->model('gcm_push');
+			$this->gcm_push->push($this->config->item('Kind_StoreWifi'), $gcmData->user_id);
 		} catch(Exception $e) {
 		
 		}
