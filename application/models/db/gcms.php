@@ -19,17 +19,21 @@ class Gcms extends CI_Model {
 		
 	public function Add($data) {
 		try {
-		if($this->verify($data->registrarId)) {
-			$data->created_at = $data->updated_at = date("Y-m-d H:i:s", time());
-			$this->db->insert($this->tab, $data);
-		} 
+			$user_id = $data->user_id;
+			if($this->verify($user_id)) {
+				$data->created_at = $data->updated_at = date("Y-m-d H:i:s", time());
+				$this->db->insert($this->tab, $data);
+			} else {
+				$data->updated_at = date("Y-m-d H:i:s", time());
+				$this->Update($user_id, $data);
+			}
 		} catch(Exception $e) {
 		
 		}
 	}
 	
-	public function Update($id, $data) {
-		$this->db->where('id', $id);
+	public function Update($user_id, $data) {
+		$this->db->where('user_id', $user_id);
 		$this->db->update($this->tab, $data);
 	}
 	
@@ -38,8 +42,8 @@ class Gcms extends CI_Model {
 		$this->db->delete($this->tab); 
 	}
 	
-	public function verify($registrarId) {
-		$this->db->where('registrarId', $registrarId);
+	public function verify($user_id) {
+		$this->db->where('user_id', $user_id);
 		$query =  $this->db->get($this->tab);
 		if($query->num_rows() > 0) {
 			return false;
