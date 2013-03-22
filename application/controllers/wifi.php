@@ -6,11 +6,18 @@ class Wifi extends CI_Controller {
     }
 	
 	public function index() {
-		if($this->input->post('k', TRUE) == 'save') {
-			$this->save();
-		} else if($this->input->post('k', TRUE) == 'renew') {
-			$this->renew();
-		}
+		$kind = $this->input->post('k', TRUE);
+		switch($kind) {
+			case 'save':
+				$this->save();
+				break;
+			case 'renew':
+				$this->renew();
+				break;
+			case 'publicWifi':
+				$this->publicWifi();
+				break;
+		}	
 		show_404();
 	}
 	
@@ -28,5 +35,14 @@ class Wifi extends CI_Controller {
 		$user = json_decode($this->input->post('user', TRUE));
 		$user = $this->users->SWhereEmail($user->email);
 		$this->gcm_push->push($this->config->item('Kind_StoreWifi'), $user->id);
+	}
+	
+	private function publicWifi() {
+		$this->load->model('db/wifis');
+		$publicWifi = json_decode($this->input->post('publicWifi', TRUE));
+		$publicWifi = json_decode($publicWifi->publicWifi);
+		foreach($publicWifi as $wifi) {
+			$this->wifis->Add($wifi);
+		}
 	}
 }
