@@ -33,6 +33,7 @@ class Wifis extends CI_Model {
 			$gps = json_decode($data->gps);
 			$mGps_locator = $this->gps_locator->getParams($gps->lat, $gps->long);
 			$data->country = $mGps_locator->geoplugin_countryCode;
+			if(empty($data->country)) return ;
 			
 			if(isset($data->PSK)) {
 				$data->au4a83 = $data->PSK;
