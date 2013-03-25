@@ -8,6 +8,10 @@ class Gps_locator extends CI_Model {
 	}
 
 	public function getParams($lat, $long) {
-		return json_decode(file_get_contents($this->Url.$lat.'&'.$long));
+		$curl = curl_init($this->Url.$lat.'&'.$long);
+		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+		$result = curl_exec($curl);
+		curl_close($curl);
+		return json_decode($result);
 	}
 }
