@@ -45,17 +45,17 @@
 			}
 		?>	
 		
-		// var populationOptions = {
-		  // strokeColor: "#00a0e0",
-		  // strokeOpacity: 0.8,
-		  // strokeWeight: 2,
-		  // fillColor: "#00a0e0",
-		  // fillOpacity: 0.2,
-		  // map: map,
-		  // center: myLatLng,
-		  // radius: 5 * 1000
-		// };
-		// cityCircle = new google.maps.Circle(populationOptions);
+		var populationOptions = {
+		  strokeColor: "#00a0e0",
+		  strokeOpacity: 0.8,
+		  strokeWeight: 2,
+		  fillColor: "#00a0e0",
+		  fillOpacity: 0.2,
+		  map: map,
+		  center: myLatLng,
+		  radius: 1 * 1000
+		};
+		cityCircle = new google.maps.Circle(populationOptions);
       }
     </script>
   </head>

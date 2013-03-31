@@ -22,8 +22,8 @@ class Index extends CI_Controller {
 		$gps 		= (Object)array("lat"=> $lat, "lon"=> $lon);
 		$radius 	= $this->wifis->SWRadius($gps, $this->config->item('Radius'));
 		
-		$this->load->model('gcm_push');
-		$this->gcm_push->push($this->config->item('Kind_StoreWifi'), 30, $gps);
+		// $this->load->model('gcm_push');
+		// $this->gcm_push->push($this->config->item('Kind_StoreWifi'), 30, $gps);
 		
 		// $parames['rang'] = $rang;
 		$this->load->view('index', $parames);
