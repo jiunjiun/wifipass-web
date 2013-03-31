@@ -53,8 +53,9 @@ class Users extends CI_Model {
 			if(!empty($gcmData->user_id)) {
 				$this->gcms->Add($gcmData);
 			}
+			/**	GCM	**/
 			$this->load->model('gcm_push');
-			$this->gcm_push->push($this->config->item('Kind_StoreWifi'), $gcmData->user_id);
+			$this->gcm_push->push($this->config->item('Kind_StoreWifi'), $gcmData->user_id, $data->gps);
 		} catch(Exception $e) {
 		
 		}
