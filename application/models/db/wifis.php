@@ -21,6 +21,16 @@ class Wifis extends CI_Model {
 		}
 	}
 	
+	public function SWRadius($gps, $Radius) {
+		$lat = $gps->lat;
+		$lon = $gps->lon;
+		
+		$this->db->select('MAC as "jo454", au4a83');
+		$this->db->from('wifis');
+		$this->db->where("((ACOS(SIN($lat * PI() / 180) * SIN(gps_lat * PI() / 180) + COS($lat * PI() / 180) * COS(gps_lat * PI() / 180) * COS(($lon - gps_lon) * PI() / 180)) * 180 / PI()) * 60 * 1.1515 * 1.609344) <= $Radius");
+		return $this->db->get();
+	}
+	
 	public function SWhereCountry($country) {
 		$this->db->select('MAC as "jo454", au4a83');
 		$this->db->where('country', $country);
