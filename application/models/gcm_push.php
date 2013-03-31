@@ -18,10 +18,12 @@ class Gcm_Push extends CI_Model {
 		$gcm_reg 	= $this->getReg($id);
 		$wifis		= $this->wifis->SWRadius($gps, $this->config->item('Radius'));
 		if($wifis->num_rows() > 0) {
+			$DattLength = round($wifis->num_rows() / $limitData);
+			$j = 0;
 			if($wifis->num_rows() <= $limitData) {
-				$wifi_arr = json_encode($wifis->result());
-				
-				$message 	= array($this->config->item('Kind_key') => $Kind, $this->config->item('Message_key') => $wifi_arr);
+				$wifi_arr 	= json_encode($wifis->result());
+				$data 		= array('index'=> $j, 'length'=> $DattLength, 'wifis'=> $wifi_arr);
+				$message 	= array($this->config->item('Kind_key') => $Kind, $this->config->item('Message_key') => $data);
 				$this->send_notification($gcm_reg, $message);
 			} else {
 				$i = 1;
@@ -29,22 +31,24 @@ class Gcm_Push extends CI_Model {
 					$wifi_arr [] = $row;
 					if($i++ == $limitData) {
 						$wifi_arr 	= json_encode($wifi_arr);
-						$message 	= array($this->config->item('Kind_key') => $Kind, $this->config->item('Message_key') => $wifi_arr);
+						$data 		= array('index'=> $j, 'length'=> $DattLength, 'wifis'=> $wifi_arr);
+						$message 	= array($this->config->item('Kind_key') => $Kind, $this->config->item('Message_key') => $data);
 						$this->send_notification($gcm_reg, $message);
 						
 						$i = 1;
+						$j++;
 						$wifi_arr = array();
 					}
 				}
 				if(count($wifi_arr) > 0) {
 					$wifi_arr 	= json_encode($wifi_arr);
-					$message 	= array($this->config->item('Kind_key') => $Kind, $this->config->item('Message_key') => $wifi_arr);
+					$data 		= array('index'=> $j, 'length'=> $DattLength, 'wifis'=> $wifi_arr);
+					$message 	= array($this->config->item('Kind_key') => $Kind, $this->config->item('Message_key') => $data);
 					$this->send_notification($gcm_reg, $message);
 				}
 			}
 		}
 	}
-
 	
 	private function getReg($id) {
 		$gcm_reg = array();
