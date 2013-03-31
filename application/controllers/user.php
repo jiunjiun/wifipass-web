@@ -8,7 +8,7 @@ class User extends CI_Controller {
 	public function index() {		
 		if($this->input->post('k', TRUE) == 'reg')
 			$this->register();
-		show_404();
+		// show_404();
 	}
 	
 	private function register() {

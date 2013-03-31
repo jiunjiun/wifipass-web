@@ -18,7 +18,7 @@ class Wifi extends CI_Controller {
 				$this->publicWifi();
 				break;
 		}	
-		show_404();
+		// show_404();
 	}
 	
 	private function save() {
