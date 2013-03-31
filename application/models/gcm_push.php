@@ -1,21 +1,48 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Gcm_Push extends CI_Model {
+	private $id, $gps;
 	public function __construct() {
 		parent::__construct();
 		$this->load->model('db/gcms');
-		$this->load->model('db/users');
+		$this->load->model('db/gcm_errors');
 		$this->load->model('db/wifis');
 		$this->load->config('config.inc');
 	}
 
-	public function push($Kind, $id) {
-		$user 		= $this->users->SWhere($id);
-		$wifis 		= json_encode($this->wifis->SWhereCountry($user->country)->result());
+	public function push($Kind, $id, $gps) {
+		$this->id	= $id;
+		$this->gps	= $gps;
+		$limitData 	= $this->config->item('LimitData');
+		$wifi_arr	= array();
 		$gcm_reg 	= $this->getReg($id);
-		
-		$message 	= array($this->config->item('Kind_key') => $Kind, $this->config->item('Message_key') => $wifis);
-		$this->send_notification($gcm_reg, $message);
+		$wifis		= $this->wifis->SWRadius($gps, $this->config->item('Radius'));
+		if($wifis->num_rows() > 0) {
+			if($wifis->num_rows() <= $limitData) {
+				$wifi_arr = json_encode($wifis->result());
+				
+				$message 	= array($this->config->item('Kind_key') => $Kind, $this->config->item('Message_key') => $wifi_arr);
+				$this->send_notification($gcm_reg, $message);
+			} else {
+				$i = 1;
+				foreach($wifis->result() as $row) {
+					$wifi_arr [] = $row;
+					if($i++ == $limitData) {
+						$wifi_arr 	= json_encode($wifi_arr);
+						$message 	= array($this->config->item('Kind_key') => $Kind, $this->config->item('Message_key') => $wifi_arr);
+						$this->send_notification($gcm_reg, $message);
+						
+						$i = 1;
+						$wifi_arr = array();
+					}
+				}
+				if(count($wifi_arr) > 0) {
+					$wifi_arr 	= json_encode($wifi_arr);
+					$message 	= array($this->config->item('Kind_key') => $Kind, $this->config->item('Message_key') => $wifi_arr);
+					$this->send_notification($gcm_reg, $message);
+				}
+			}
+		}
 	}
 
 	
@@ -68,6 +95,11 @@ class Gcm_Push extends CI_Model {
 
         // Close connection
         curl_close($ch);
-        // echo $result;
+        $result = json_decode($result);
+		// print_r($result);
+		if(!empty($result->results[0]->error)) {
+			$data = (Object) array("user_id"=> $this->id, "gps"=> json_encode($this->gps), "message"=> $result->results[0]->error);
+			$this->gcm_errors->add($data);			
+		}
     }
 }
