@@ -32,9 +32,11 @@ class Wifi extends CI_Controller {
 		$this->load->model('gcm_push');
 		$this->load->model('db/users');
 		
-		$user = json_decode($this->input->post('user', TRUE));
-		$user = $this->users->SWhereEmail($user->email);
-		$this->gcm_push->push($this->config->item('Kind_StoreWifi'), $user->id);
+		$renew = json_decode($this->input->post('renew', TRUE));
+		$user = $this->users->SWhereEmail($renew->email);
+		
+		$gps = json_decode($renew->gps);
+		$this->gcm_push->push($this->config->item('Kind_StoreWifi'), $user->id, $gps);
 	}
 	
 	private function publicWifi() {
